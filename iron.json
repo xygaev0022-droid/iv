@@ -1,0 +1,335 @@
+{
+  "dns": {
+    "servers": [
+      "8.8.8.8",
+      "1.1.1.1"
+    ],
+    "queryStrategy": "UseIP"
+  },
+  "routing": {
+    "rules": [
+      {
+        "type": "field",
+        "domain": [
+          "regexp:(^|\\.)yandex\\.",
+          "regexp:(^|\\.)ya\\.",
+          "regexp:(^|\\.)vk\\.",
+          "regexp:(^|\\.)avito\\.",
+          "regexp:(^|\\.)okko\\.",
+          "regexp:(^|\\.)alfabank\\.",
+          "regexp:(^|\\.)gosuslugi\\.",
+          "regexp:(^|\\.)ozon\\.",
+          "regexp:(^|\\.)wildberries\\.",
+          "regexp:(^|\\.)nspk\\.",
+          "regexp:(^|\\.)gismeteo\\.",
+          "regexp:(^|\\.)2gis\\.",
+          "regexp:(^|\\.)domclick\\.",
+          "regexp:(^|\\.)max\\.",
+          "regexp:(^|\\.)kinopoisk\\.",
+          "regexp:(^|\\.)megamarket\\.",
+          "regexp:(^|\\.)kuper\\.",
+          "regexp:(^|\\.)vkusnoitochka\\.",
+          "regexp:(^|\\.)psbank\\.",
+          "regexp:(^|\\.)vtb\\.",
+          "regexp:(^|\\.)nalog\\.",
+          "regexp:(^|\\.)gov\\.",
+          "regexp:(^|\\.)mos\\.",
+          "regexp:(^|\\.)pochta\\.",
+          "regexp:(^|\\.)goskey\\.",
+          "regexp:(^|\\.)dzen\\.",
+          "regexp:(^|\\.)mail\\.",
+          "regexp:(^|\\.)5ka\\.",
+          "regexp:(^|\\.)5x\\.",
+          "regexp:(^|\\.)perekrestok\\.",
+          "regexp:(^|\\.)vkusvill\\.",
+          "regexp:(^|\\.)auchan\\.",
+          "regexp:(^|\\.)magnit\\.",
+          "regexp:(^|\\.)aeroflot\\.",
+          "regexp:(^|\\.)rzd\\.",
+          "regexp:(^|\\.)csat\\.",
+          "regexp:(^|\\.)rutube\\.",
+          "regexp:(^|\\.)rustore\\.",
+          "regexp:(^|\\.)ok\\.",
+          "regexp:(^|\\.)fix-price\\.",
+          "regexp:(^|\\.)dixy\\.",
+          "regexp:(^|\\.)rostics\\.",
+          "regexp:(^|\\.)yota\\.",
+          "regexp:(^|\\.)apptracer\\.",
+          "regexp:(^|\\.)vk-analytics\\.",
+          "regexp:(^|\\.)ifconfig\\.",
+          "regexp:(^|\\.)trace-flow\\.",
+          "regexp:(^|\\.)oneme\\.",
+          "full:ip.mail.ru",
+          "full:api.ipify.org",
+          "full:checkip.amazonaws.com"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "protocol": [
+          "bittorrent"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "network": "tcp,udp",
+        "balancerTag": "iron-balancer"
+      }
+    ],
+    "balancers": [
+      {
+        "tag": "iron-balancer",
+        "selector": [
+          "iron-"
+        ],
+        "strategy": {
+          "type": "leastPing"
+        }
+      }
+    ],
+    "domainMatcher": "hybrid",
+    "domainStrategy": "IPIfNonMatch"
+  },
+  "inbounds": [
+    {
+      "tag": "socks",
+      "port": 10808,
+      "listen": "127.0.0.1",
+      "protocol": "socks",
+      "settings": {
+        "udp": true,
+        "auth": "noauth"
+      },
+      "sniffing": {
+        "enabled": true,
+        "routeOnly": true,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
+      }
+    },
+    {
+      "tag": "http",
+      "port": 10809,
+      "listen": "127.0.0.1",
+      "protocol": "http",
+      "settings": {
+        "allowTransparent": false
+      },
+      "sniffing": {
+        "enabled": true,
+        "routeOnly": true,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "iron-01",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "185.253.23.125",
+            "port": 443,
+            "users": [
+              {
+                "id": "c000b647-2655-4a46-a1b1-16352f883de2",
+                "encryption": "none",
+                "flow": "xtls-rprx-vision"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {},
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "cdn5.bypasshape.ru",
+          "fingerprint": "firefox",
+          "alpn": [
+            "http/1.1",
+            "h2"
+          ]
+        }
+      }
+    },
+    {
+      "tag": "iron-02",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "auto.mustproxy.tech",
+            "port": 443,
+            "users": [
+              {
+                "id": "c000b647-2655-006e-a1b1-16352f883de2",
+                "encryption": "none",
+                "flow": "xtls-rprx-vision"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {},
+        "security": "reality",
+        "realitySettings": {
+          "serverName": "auto.mustproxy.tech",
+          "publicKey": "Aj6Lfc0JKKROX46eHAQHlzrNpOTY9CKp7BcVj9cw8Ag",
+          "shortId": "75f8575e5396a2fe",
+          "fingerprint": "firefox"
+        }
+      }
+    },
+    {
+      "tag": "iron-03",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "82.41.30.165",
+            "port": 443,
+            "users": [
+              {
+                "id": "c000b647-2655-4a46-a1b1-16352f883de2",
+                "encryption": "none",
+                "flow": "xtls-rprx-vision"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {},
+        "security": "reality",
+        "realitySettings": {
+          "serverName": "kz.mustproxy.tech",
+          "publicKey": "gcppazdo5w9kBs9TcK9sRPSValKCJ3L3kOpRxi8TRW0",
+          "shortId": "75f8575e5396a2fe",
+          "fingerprint": "firefox"
+        }
+      }
+    },
+    {
+      "tag": "iron-04",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "auto-se.salesmarketmsk.ru",
+            "port": 443,
+            "users": [
+              {
+                "id": "c000b647-2655-006d-a1b1-16352f883de2",
+                "encryption": "none",
+                "flow": "xtls-rprx-vision"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {},
+        "security": "reality",
+        "realitySettings": {
+          "serverName": "auto-se.salesmarketmsk.ru",
+          "publicKey": "Aj6Lfc0JKKROX46eHAQHlzrNpOTY9CKp7BcVj9cw8Ag",
+          "shortId": "75f8575e5396a2fe",
+          "fingerprint": "firefox"
+        }
+      }
+    },
+    {
+      "tag": "iron-05",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "auto-se.salesmarketmsk.ru",
+            "port": 443,
+            "users": [
+              {
+                "id": "c000b647-2655-0067-a1b1-16352f883de2",
+                "encryption": "none",
+                "flow": "xtls-rprx-vision"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {},
+        "security": "reality",
+        "realitySettings": {
+          "serverName": "auto-se.salesmarketmsk.ru",
+          "publicKey": "Aj6Lfc0JKKROX46eHAQHlzrNpOTY9CKp7BcVj9cw8Ag",
+          "shortId": "75f8575e5396a2fe",
+          "fingerprint": "firefox"
+        }
+      }
+    },
+    {
+      "tag": "iron-06",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "auto-se.salesmarketmsk.ru",
+            "port": 443,
+            "users": [
+              {
+                "id": "c000b647-2655-0068-a1b1-16352f883de2",
+                "encryption": "none",
+                "flow": "xtls-rprx-vision"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {},
+        "security": "reality",
+        "realitySettings": {
+          "serverName": "auto-se.salesmarketmsk.ru",
+          "publicKey": "Aj6Lfc0JKKROX46eHAQHlzrNpOTY9CKp7BcVj9cw8Ag",
+          "shortId": "75f8575e5396a2fe",
+          "fingerprint": "firefox"
+        }
+      }
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom"
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole"
+    }
+  ],
+  "observatory": {
+    "subjectSelector": [
+      "iron-"
+    ],
+    "probeUrl": "https://www.gstatic.com/generate_204",
+    "probeInterval": "1m",
+    "enableConcurrency": true
+  },
+  "remarks": "\u2661 \u2764\ufe0f \ud83d\udc9b IRON VPN"
+}
