@@ -82,7 +82,12 @@
       {
         "tag": "iron-balancer",
         "selector": [
-          "iron-"
+          "iron-01",
+          "iron-02",
+          "iron-03",
+          "iron-04",
+          "iron-05",
+          "iron-06"
         ],
         "strategy": {
           "type": "leastPing"
